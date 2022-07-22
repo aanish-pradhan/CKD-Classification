@@ -473,7 +473,7 @@ classification models.
 
 ### Backward Model
 
-We will utilize the \texttt{%>%} (pipe) operator from the 
+We will utilize the \texttt{\%>\%} (pipe) operator from the 
 \textcolor{blue}{\texttt{dplyr}} package.
 
 ```{r Validation Backward Model, warning = FALSE}
