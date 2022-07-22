@@ -1,0 +1,1418 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Classifying Chronic Kidney Disease Using a Multivariate Binary Logistic Regression Model},
+  pdfauthor={Aanish Pradhan},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage[backend=biber,citestyle=numeric,bibstyle=numeric,autocite=superscript]{biblatex}
+\addbibresource{references.bib}
+
+\title{\textbf{Classifying Chronic Kidney Disease Using a Multivariate
+Binary Logistic Regression Model}}
+\author{Aanish Pradhan}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+\hypertarget{abstract}{%
+\section{Abstract}\label{abstract}}
+
+Chronic Kidney Disease (CKD) is one of the leading causes of death in
+the United States. In 2020, renal diseases accounted for approximately
+53,000 deaths. It is estimated that approximately 15\% of adults in the
+U.S. have CKD. Furthermore, of the 15\% of adults that have CKD, 90\% of
+them are not aware that they have the condition \autocite{CDC2021}. CKD
+is a challenging condition for physicians to diagnose and often requires
+a combination of laboratory testing and physical examinations to be able
+to diagnose a patient. We attempted to construct a statistical
+classification model that could determine whether or not a patient has
+CKD from a set of various predictors that could be obtained from
+laboratory blood test results or a physical examination. Our approach
+consisted of constructing and training several multivariate binary
+logistic regression models using various feature selection algorithms.
+The resulting models were benchmarked on a batch of testing data set
+aside earlier. The optimal model was chosen based on which model
+demonstrated the most favorable results in a confusion matrix. All
+models were able to obtain an accuracy of over 93\%.
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Chronic Kidney Disease is an umbrella phrase, used to refer to a
+multitude of chronic, degenerative (i.e.~loss of kidney function over
+time) renal disorders \autocite{Versino2019}. Diagnosing CKD is
+problematic because its symptoms do not present until later in life when
+the condition has seriously progressed. For this reason, CKD is often
+called a ``silent killer'' \autocite{Kopyt2006}. Furthermore, CKD
+presents with similar symptoms as acute kidney injury as well as
+completely unrelated conditions. For example, microscopic hematuria
+(presence of red blood cells in the urine) and proteinuria (presence of
+protein in the urine) are characteristic symptoms of kidney disease.
+However, they are also observed in individuals after strenuous exercise
+such as long-distance running and weightlifting. Physicians have to use
+a combination of metrics collected over time from full-body physical
+examinations and laboratory blood test results as well as their
+intuition to diagnose CKD in patients.
+
+\hypertarget{methods}{%
+\section{Methods}\label{methods}}
+
+Our approach consists of three phases: an initial setup, modeling and,
+lastly, testing.
+
+\hypertarget{setup}{%
+\subsection{Setup}\label{setup}}
+
+In our setup phase, we will acquire, clean, format and conduct some
+initial exploratory data analysis (EDA).
+
+\hypertarget{data-collection}{%
+\subsubsection{Data Collection}\label{data-collection}}
+
+Our data will come from a dataset housed in the University of
+California-Irvine's Machine Learning Repository available
+\href{https://archive.ics.uci.edu/ml/machine-learning-databases/00336/Chronic_Kidney_Disease.rar}{\underline{here}}
+\autocite{Dua2019}. The data itself was collected in a study conducted
+over the span of two months at the Alagappa University Health Care
+Centre in Tamilnadu, India. No other details were given regarding
+collection methods.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Read original dataset}
+\NormalTok{originalData }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"Data/chronic\_kidney\_disease\_full.csv"}\NormalTok{, }\AttributeTok{header =} \ConstantTok{TRUE}\NormalTok{)}
+\FunctionTok{colnames}\NormalTok{(originalData)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "id"       "X.age."   "X.bp."    "X.sg."    "X.al."    "X.su."   
+##  [7] "X.rbc."   "X.pc."    "X.pcc."   "X.ba."    "X.bgr."   "X.bu."   
+## [13] "X.sc."    "X.sod."   "X.pot."   "X.hemo."  "X.pcv."   "X.wbcc." 
+## [19] "X.rbcc."  "X.htn."   "X.dm."    "X.cad."   "X.appet." "X.pe."   
+## [25] "X.ane."   "X.class."
+\end{verbatim}
+
+The dataset contains a multitude of features such as age, blood
+pressure, serum creatinine and other biometrics that are obtained from
+full-body physical exams and laboratory blood tests.
+
+\hypertarget{data-wrangling}{%
+\subsubsection{Data Wrangling}\label{data-wrangling}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(originalData, }\AttributeTok{n =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   id X.age. X.bp. X.sg. X.al. X.su. X.rbc.    X.pc.     X.pcc.      X.ba.
+## 1  1     48    80 1.020     1     0      ?   normal notpresent notpresent
+## 2  2      7    50 1.020     4     0      ?   normal notpresent notpresent
+## 3  3     62    80 1.010     2     3 normal   normal notpresent notpresent
+## 4  4     48    70 1.005     4     0 normal abnormal    present notpresent
+## 5  5     51    80 1.010     2     0 normal   normal notpresent notpresent
+##   X.bgr. X.bu. X.sc. X.sod. X.pot. X.hemo. X.pcv. X.wbcc. X.rbcc. X.htn. X.dm.
+## 1    121    36   1.2      ?      ?    15.4     44    7800     5.2    yes   yes
+## 2      ?    18   0.8      ?      ?    11.3     38    6000       ?     no    no
+## 3    423    53   1.8      ?      ?     9.6     31    7500       ?     no   yes
+## 4    117    56   3.8    111    2.5    11.2     32    6700     3.9    yes    no
+## 5    106    26   1.4      ?      ?    11.6     35    7300     4.6     no    no
+##   X.cad. X.appet. X.pe. X.ane. X.class.
+## 1     no     good    no     no      ckd
+## 2     no     good    no     no      ckd
+## 3     no     poor    no    yes      ckd
+## 4     no     poor   yes    yes      ckd
+## 5     no     good    no     no      ckd
+\end{verbatim}
+
+We observe some extraneous characters contaminating the dataset. We will
+replace extraneous characters, whitespace and blankspace with ``NA''
+values.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Replace extraneous characters, whitespace and blankspace with NA values}
+\NormalTok{replacedData }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"Data/chronic\_kidney\_disease\_full.csv"}\NormalTok{, }
+    \AttributeTok{header =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{na.strings =} \FunctionTok{c}\NormalTok{(}\StringTok{""}\NormalTok{, }\StringTok{" "}\NormalTok{, }\StringTok{"?"}\NormalTok{))}
+\FunctionTok{head}\NormalTok{(replacedData, }\AttributeTok{n =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   id X.age. X.bp. X.sg. X.al. X.su. X.rbc.  X.pc.     X.pcc.      X.ba. X.bgr.
+## 1  1     48    80  1.02     1     0   <NA> normal notpresent notpresent    121
+##   X.bu. X.sc. X.sod. X.pot. X.hemo. X.pcv. X.wbcc. X.rbcc. X.htn. X.dm. X.cad.
+## 1    36   1.2     NA     NA    15.4     44    7800     5.2    yes   yes     no
+##   X.appet. X.pe. X.ane. X.class.
+## 1     good    no     no      ckd
+\end{verbatim}
+
+\hypertarget{data-cleaning}{%
+\subsubsection{Data Cleaning}\label{data-cleaning}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{any}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(replacedData))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] TRUE
+\end{verbatim}
+
+Our dataset contains observations with missing values. We will discard
+these observations.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Omit observations with NA entries}
+\NormalTok{cleanedData }\OtherTok{\textless{}{-}} \FunctionTok{na.omit}\NormalTok{(replacedData)}
+\FunctionTok{any}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(cleanedData))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] FALSE
+\end{verbatim}
+
+\hypertarget{data-formatting}{%
+\subsubsection{Data Formatting}\label{data-formatting}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(cleanedData)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    157 obs. of  26 variables:
+##  $ id      : chr  "4" "10" "12" "15" ...
+##  $ X.age.  : int  48 53 63 68 61 48 69 73 73 46 ...
+##  $ X.bp.   : int  70 90 70 80 80 80 70 70 80 60 ...
+##  $ X.sg.   : num  1 1.02 1.01 1.01 1.01 ...
+##  $ X.al.   : int  4 2 3 3 2 4 3 0 2 1 ...
+##  $ X.su.   : int  0 0 0 2 0 0 4 0 0 0 ...
+##  $ X.rbc.  : chr  "normal" "abnormal" "abnormal" "normal" ...
+##  $ X.pc.   : chr  "abnormal" "abnormal" "abnormal" "abnormal" ...
+##  $ X.pcc.  : chr  "present" "present" "present" "present" ...
+##  $ X.ba.   : chr  "notpresent" "notpresent" "notpresent" "present" ...
+##  $ X.bgr.  : int  117 70 380 157 173 95 264 70 253 163 ...
+##  $ X.bu.   : num  56 107 60 90 148 163 87 32 142 92 ...
+##  $ X.sc.   : num  3.8 7.2 2.7 4.1 3.9 7.7 2.7 0.9 4.6 3.3 ...
+##  $ X.sod.  : num  111 114 131 130 135 136 130 125 138 141 ...
+##  $ X.pot.  : num  2.5 3.7 4.2 6.4 5.2 3.8 4 4 5.8 4 ...
+##  $ X.hemo. : num  11.2 9.5 10.8 5.6 7.7 9.8 12.5 10 10.5 9.8 ...
+##  $ X.pcv.  : int  32 29 32 16 24 32 37 29 33 28 ...
+##  $ X.wbcc. : int  6700 12100 4500 11000 9200 6900 9600 18900 7200 14600 ...
+##  $ X.rbcc. : num  3.9 3.7 3.8 2.6 3.2 3.4 4.1 3.5 4.3 3.2 ...
+##  $ X.htn.  : chr  "yes" "yes" "yes" "yes" ...
+##  $ X.dm.   : chr  "no" "yes" "yes" "yes" ...
+##  $ X.cad.  : chr  "no" "no" "no" "yes" ...
+##  $ X.appet.: chr  "poor" "poor" "poor" "poor" ...
+##  $ X.pe.   : chr  "yes" "no" "yes" "yes" ...
+##  $ X.ane.  : chr  "yes" "yes" "no" "no" ...
+##  $ X.class.: chr  "ckd" "ckd" "ckd" "ckd" ...
+##  - attr(*, "na.action")= 'omit' Named int [1:244] 1 2 3 5 6 7 8 9 11 13 ...
+##   ..- attr(*, "names")= chr [1:244] "1" "2" "3" "5" ...
+\end{verbatim}
+
+Some of our features were read in with the wrong type. We will correct
+the type of the features.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Correct the variable types}
+\NormalTok{formattedData }\OtherTok{\textless{}{-}}\NormalTok{ cleanedData}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{id }\OtherTok{\textless{}{-}} \FunctionTok{as.integer}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{id)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.sg. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.sg.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.al. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.al.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.su. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.su.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.rbc. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.rbc.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.pc. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.pc.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.pcc. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.pcc.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.ba. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.ba.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.htn. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.htn.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.dm. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.dm.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.cad. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.cad.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.appet. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.appet.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.pe. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.pe.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.ane. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.ane.)}
+\NormalTok{formattedData}\SpecialCharTok{$}\NormalTok{X.class. }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.class.)}
+\FunctionTok{str}\NormalTok{(formattedData)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    157 obs. of  26 variables:
+##  $ id      : int  4 10 12 15 21 23 28 49 59 72 ...
+##  $ X.age.  : int  48 53 63 68 61 48 69 73 73 46 ...
+##  $ X.bp.   : int  70 90 70 80 80 80 70 70 80 60 ...
+##  $ X.sg.   : Factor w/ 5 levels "1.005","1.01",..: 1 4 2 2 3 5 2 1 4 2 ...
+##  $ X.al.   : Factor w/ 5 levels "0","1","2","3",..: 5 3 4 4 3 5 4 1 3 2 ...
+##  $ X.su.   : Factor w/ 6 levels "0","1","2","3",..: 1 1 1 3 1 1 5 1 1 1 ...
+##  $ X.rbc.  : Factor w/ 2 levels "abnormal","normal": 2 1 1 2 1 2 2 2 1 2 ...
+##  $ X.pc.   : Factor w/ 2 levels "abnormal","normal": 1 1 1 1 1 1 1 2 1 2 ...
+##  $ X.pcc.  : Factor w/ 2 levels "notpresent","present": 2 2 2 2 1 1 1 1 1 1 ...
+##  $ X.ba.   : Factor w/ 2 levels "notpresent","present": 1 1 1 2 1 1 1 1 1 1 ...
+##  $ X.bgr.  : int  117 70 380 157 173 95 264 70 253 163 ...
+##  $ X.bu.   : num  56 107 60 90 148 163 87 32 142 92 ...
+##  $ X.sc.   : num  3.8 7.2 2.7 4.1 3.9 7.7 2.7 0.9 4.6 3.3 ...
+##  $ X.sod.  : num  111 114 131 130 135 136 130 125 138 141 ...
+##  $ X.pot.  : num  2.5 3.7 4.2 6.4 5.2 3.8 4 4 5.8 4 ...
+##  $ X.hemo. : num  11.2 9.5 10.8 5.6 7.7 9.8 12.5 10 10.5 9.8 ...
+##  $ X.pcv.  : int  32 29 32 16 24 32 37 29 33 28 ...
+##  $ X.wbcc. : int  6700 12100 4500 11000 9200 6900 9600 18900 7200 14600 ...
+##  $ X.rbcc. : num  3.9 3.7 3.8 2.6 3.2 3.4 4.1 3.5 4.3 3.2 ...
+##  $ X.htn.  : Factor w/ 2 levels "no","yes": 2 2 2 2 2 2 2 2 2 2 ...
+##  $ X.dm.   : Factor w/ 2 levels "no","yes": 1 2 2 2 2 1 2 2 2 2 ...
+##  $ X.cad.  : Factor w/ 2 levels "no","yes": 1 1 1 2 2 1 2 1 2 1 ...
+##  $ X.appet.: Factor w/ 2 levels "good","poor": 2 2 2 2 2 1 1 1 1 1 ...
+##  $ X.pe.   : Factor w/ 2 levels "no","yes": 2 1 2 2 2 1 2 2 1 1 ...
+##  $ X.ane.  : Factor w/ 2 levels "no","yes": 2 2 1 1 2 2 1 1 1 1 ...
+##  $ X.class.: Factor w/ 2 levels "ckd","notckd": 1 1 1 1 1 1 1 1 1 1 ...
+##  - attr(*, "na.action")= 'omit' Named int [1:244] 1 2 3 5 6 7 8 9 11 13 ...
+##   ..- attr(*, "names")= chr [1:244] "1" "2" "3" "5" ...
+\end{verbatim}
+
+With our dataset cleaned, we can proceed with exploratory data analysis.
+
+\hypertarget{exploratory-data-analysis}{%
+\subsubsection{Exploratory Data
+Analysis}\label{exploratory-data-analysis}}
+
+We can begin EDA with a 5-number summary of the features in our prepared
+data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(formattedData)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        id            X.age.         X.bp.          X.sg.    X.al.   X.su.  
+##  Min.   :  4.0   Min.   : 6.0   Min.   : 50.00   1.005: 3   0:115   0:139  
+##  1st Qu.:243.0   1st Qu.:39.0   1st Qu.: 60.00   1.01 :23   1:  3   1:  6  
+##  Median :299.0   Median :50.0   Median : 80.00   1.015:10   2:  9   2:  6  
+##  Mean   :275.2   Mean   :49.4   Mean   : 74.08   1.02 :60   3: 15   3:  3  
+##  3rd Qu.:356.0   3rd Qu.:60.0   3rd Qu.: 80.00   1.025:61   4: 15   4:  2  
+##  Max.   :400.0   Max.   :83.0   Max.   :110.00                      5:  1  
+##       X.rbc.         X.pc.            X.pcc.           X.ba.    
+##  abnormal: 18   abnormal: 29   notpresent:143   notpresent:145  
+##  normal  :139   normal  :128   present   : 14   present   : 12  
+##                                                                 
+##                                                                 
+##                                                                 
+##                                                                 
+##      X.bgr.          X.bu.            X.sc.            X.sod.     
+##  Min.   : 70.0   Min.   : 10.00   Min.   : 0.400   Min.   :111.0  
+##  1st Qu.: 97.0   1st Qu.: 26.00   1st Qu.: 0.700   1st Qu.:135.0  
+##  Median :117.0   Median : 39.00   Median : 1.100   Median :139.0  
+##  Mean   :131.5   Mean   : 52.61   Mean   : 2.197   Mean   :138.8  
+##  3rd Qu.:132.0   3rd Qu.: 50.00   3rd Qu.: 1.700   3rd Qu.:144.0  
+##  Max.   :490.0   Max.   :309.00   Max.   :15.200   Max.   :150.0  
+##      X.pot.          X.hemo.          X.pcv.         X.wbcc.     
+##  Min.   : 2.500   Min.   : 3.10   Min.   : 9.00   Min.   : 3800  
+##  1st Qu.: 3.700   1st Qu.:12.60   1st Qu.:37.00   1st Qu.: 6500  
+##  Median : 4.500   Median :14.30   Median :44.00   Median : 7800  
+##  Mean   : 4.644   Mean   :13.69   Mean   :41.89   Mean   : 8464  
+##  3rd Qu.: 4.900   3rd Qu.:15.80   3rd Qu.:48.00   3rd Qu.: 9700  
+##  Max.   :47.000   Max.   :17.80   Max.   :54.00   Max.   :26400  
+##     X.rbcc.      X.htn.    X.dm.     X.cad.    X.appet.   X.pe.     X.ane.   
+##  Min.   :2.100   no :123   no :129   no :146   good:138   no :137   no :141  
+##  1st Qu.:4.500   yes: 34   yes: 28   yes: 11   poor: 19   yes: 20   yes: 16  
+##  Median :5.000                                                               
+##  Mean   :4.892                                                               
+##  3rd Qu.:5.600                                                               
+##  Max.   :8.000                                                               
+##    X.class.  
+##  ckd   : 43  
+##  notckd:114  
+##              
+##              
+##              
+## 
+\end{verbatim}
+
+We have several continuous numerical variables. We will examine
+correlation between the features.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Extract continuous numerical variables}
+\NormalTok{correlationMatrix }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.age., formattedData}\SpecialCharTok{$}\NormalTok{X.bp., }
+\NormalTok{    formattedData}\SpecialCharTok{$}\NormalTok{X.bgr., formattedData}\SpecialCharTok{$}\NormalTok{X.bu., formattedData}\SpecialCharTok{$}\NormalTok{X.sc., }
+\NormalTok{        formattedData}\SpecialCharTok{$}\NormalTok{X.sod., formattedData}\SpecialCharTok{$}\NormalTok{X.pot., formattedData}\SpecialCharTok{$}\NormalTok{X.hemo., }
+\NormalTok{            formattedData}\SpecialCharTok{$}\NormalTok{X.pcv., formattedData}\SpecialCharTok{$}\NormalTok{X.wbcc., formattedData}\SpecialCharTok{$}\NormalTok{X.rbcc.)}
+
+\CommentTok{\# Abbreviate names}
+\FunctionTok{colnames}\NormalTok{(correlationMatrix) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"X.age."}\NormalTok{, }\StringTok{"X.bp."}\NormalTok{, }\StringTok{"X.bgr."}\NormalTok{, }\StringTok{"X.bu."}\NormalTok{, }\StringTok{"X.sc."}\NormalTok{, }
+    \StringTok{"X.sod."}\NormalTok{, }\StringTok{"X.pot."}\NormalTok{, }\StringTok{"X.hemo."}\NormalTok{, }\StringTok{"X.pcv."}\NormalTok{, }\StringTok{"X.wbcc."}\NormalTok{, }\StringTok{"X.rbcc"}\NormalTok{)}
+
+\CommentTok{\# Correlation plot}
+\FunctionTok{plot}\NormalTok{(correlationMatrix, }\AttributeTok{main =} \StringTok{"Scatterplot of Correlation Matrix"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{CKD_Classification_Paper_files/figure-latex/EDA Correlation Matrix Scatterplot-1.pdf}
+
+The correlation matrix scatterplot shows some features are correlated
+with each other. We can quantify the correlation by examining the
+Pearson correlation coefficients computed from the correlation matrix.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compute Pearson correlation coefficients and round r{-}values}
+\FunctionTok{round}\NormalTok{(}\FunctionTok{cor}\NormalTok{(correlationMatrix, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{), }\AttributeTok{digits =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         X.age. X.bp. X.bgr. X.bu. X.sc. X.sod. X.pot. X.hemo. X.pcv. X.wbcc.
+## X.age.    1.00  0.08   0.31  0.19  0.20  -0.11   0.01   -0.25  -0.24    0.15
+## X.bp.     0.08  1.00   0.19  0.32  0.39  -0.22   0.13   -0.28  -0.35    0.01
+## X.bgr.    0.31  0.19   1.00  0.33  0.33  -0.28   0.10   -0.43  -0.44    0.21
+## X.bu.     0.19  0.32   0.33  1.00  0.90  -0.49   0.25   -0.71  -0.71    0.13
+## X.sc.     0.20  0.39   0.33  0.90  1.00  -0.53   0.14   -0.72  -0.73    0.13
+## X.sod.   -0.11 -0.22  -0.28 -0.49 -0.53   1.00  -0.05    0.58   0.57   -0.18
+## X.pot.    0.01  0.13   0.10  0.25  0.14  -0.05   1.00   -0.19  -0.21   -0.11
+## X.hemo.  -0.25 -0.28  -0.43 -0.71 -0.72   0.58  -0.19    1.00   0.86   -0.34
+## X.pcv.   -0.24 -0.35  -0.44 -0.71 -0.73   0.57  -0.21    0.86   1.00   -0.35
+## X.wbcc.   0.15  0.01   0.21  0.13  0.13  -0.18  -0.11   -0.34  -0.35    1.00
+## X.rbcc   -0.24 -0.23  -0.42 -0.62 -0.64   0.47  -0.19    0.74   0.74   -0.27
+##         X.rbcc
+## X.age.   -0.24
+## X.bp.    -0.23
+## X.bgr.   -0.42
+## X.bu.    -0.62
+## X.sc.    -0.64
+## X.sod.    0.47
+## X.pot.   -0.19
+## X.hemo.   0.74
+## X.pcv.    0.74
+## X.wbcc.  -0.27
+## X.rbcc    1.00
+\end{verbatim}
+
+Some variables appear to have strong, linear relationships with other
+variables. This indicates that we could observe issues with
+multicollinearity in our models. Using a cutoff of \(r = \pm 0.7\), we
+can identify which variables are highly correlated with others.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{abs}\NormalTok{(}\FunctionTok{cor}\NormalTok{(correlationMatrix, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)) }\SpecialCharTok{\textgreater{}} \FloatTok{0.7}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         X.age. X.bp. X.bgr. X.bu. X.sc. X.sod. X.pot. X.hemo. X.pcv. X.wbcc.
+## X.age.    TRUE FALSE  FALSE FALSE FALSE  FALSE  FALSE   FALSE  FALSE   FALSE
+## X.bp.    FALSE  TRUE  FALSE FALSE FALSE  FALSE  FALSE   FALSE  FALSE   FALSE
+## X.bgr.   FALSE FALSE   TRUE FALSE FALSE  FALSE  FALSE   FALSE  FALSE   FALSE
+## X.bu.    FALSE FALSE  FALSE  TRUE  TRUE  FALSE  FALSE    TRUE   TRUE   FALSE
+## X.sc.    FALSE FALSE  FALSE  TRUE  TRUE  FALSE  FALSE    TRUE   TRUE   FALSE
+## X.sod.   FALSE FALSE  FALSE FALSE FALSE   TRUE  FALSE   FALSE  FALSE   FALSE
+## X.pot.   FALSE FALSE  FALSE FALSE FALSE  FALSE   TRUE   FALSE  FALSE   FALSE
+## X.hemo.  FALSE FALSE  FALSE  TRUE  TRUE  FALSE  FALSE    TRUE   TRUE   FALSE
+## X.pcv.   FALSE FALSE  FALSE  TRUE  TRUE  FALSE  FALSE    TRUE   TRUE   FALSE
+## X.wbcc.  FALSE FALSE  FALSE FALSE FALSE  FALSE  FALSE   FALSE  FALSE    TRUE
+## X.rbcc   FALSE FALSE  FALSE FALSE FALSE  FALSE  FALSE    TRUE   TRUE   FALSE
+##         X.rbcc
+## X.age.   FALSE
+## X.bp.    FALSE
+## X.bgr.   FALSE
+## X.bu.    FALSE
+## X.sc.    FALSE
+## X.sod.   FALSE
+## X.pot.   FALSE
+## X.hemo.   TRUE
+## X.pcv.    TRUE
+## X.wbcc.  FALSE
+## X.rbcc    TRUE
+\end{verbatim}
+
+We observe that \textcolor{red}{\texttt{X.bu}},
+\textcolor{red}{\texttt{X.hemo.}}, and \textcolor{red}{\texttt{X.rbcc.}}
+exhibit multicollinearity with several other variables.
+
+\hypertarget{modeling}{%
+\subsection{Modeling}\label{modeling}}
+
+In our modeling phase, we will perform a training and test dataset
+split, construct our models using various feature selection algorithms
+and perform various model diagnostics.
+
+\hypertarget{train-test-data-split}{%
+\subsubsection{Train-Test Data Split}\label{train-test-data-split}}
+
+Our variable of interest is \textcolor{red}{\texttt{X.class.}}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{table}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.class.)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##    ckd notckd 
+##     43    114
+\end{verbatim}
+
+We will randomize the rows of our dataset and perform a 50-50 train-test
+data split. The training data will contain 22 ``ckd''-classified
+observations 57 ``notckd''-classified observations. The testing data
+will contain 21 ``ckd''-classified observations and 57
+``notckd''-classified observations. In order to maintain
+reproducibility, we will use a sample seed of ``42''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Generate a row{-}randomized dataset}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
+\NormalTok{randomizedData }\OtherTok{\textless{}{-}}\NormalTok{ formattedData[}\FunctionTok{sample}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(formattedData)), ]}
+\end{Highlighting}
+\end{Shaded}
+
+From our randomized dataset, we can copy the first 22 ``ckd''-classified
+observations into the training dataset and the subsequent 21
+``notckd''-classified observations into the testing dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Construct testing dataset}
+\NormalTok{testingData }\OtherTok{\textless{}{-}}\NormalTok{ randomizedData }\CommentTok{\# Dataset is constructed by Complement Rule}
+
+\CommentTok{\# Construct training dataset}
+\NormalTok{trainingData }\OtherTok{\textless{}{-}}\NormalTok{ testingData[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{157}\NormalTok{), ] }\CommentTok{\# Copy column names \& preserve type}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(testingData}\SpecialCharTok{$}\NormalTok{id)) }\CommentTok{\# Extract first 22 CKD observations}
+\NormalTok{\{}
+    \ControlFlowTok{if}\NormalTok{ ((testingData[i, ]}\SpecialCharTok{$}\NormalTok{X.class. }\SpecialCharTok{==} \StringTok{"ckd"}\NormalTok{) }\SpecialCharTok{\&} 
+\NormalTok{        (}\FunctionTok{sum}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{X.class. }\SpecialCharTok{==} \StringTok{"ckd"}\NormalTok{) }\SpecialCharTok{\textless{}} \DecValTok{22}\NormalTok{))}
+\NormalTok{    \{}
+\NormalTok{        trainingData[}\FunctionTok{nrow}\NormalTok{(trainingData) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{, ] }\OtherTok{\textless{}{-}}\NormalTok{ testingData[i, ]}
+\NormalTok{        testingData }\OtherTok{\textless{}{-}}\NormalTok{ testingData[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(i), ]}
+\NormalTok{    \}}
+\NormalTok{\}}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(testingData}\SpecialCharTok{$}\NormalTok{id)) }\CommentTok{\# Extract first 57 non{-}CKD observations }
+\NormalTok{\{}
+    \ControlFlowTok{if}\NormalTok{ ((testingData[i, ]}\SpecialCharTok{$}\NormalTok{X.class. }\SpecialCharTok{==} \StringTok{"notckd"}\NormalTok{) }\SpecialCharTok{\&} 
+\NormalTok{        (}\FunctionTok{sum}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{X.class. }\SpecialCharTok{==} \StringTok{"notckd"}\NormalTok{) }\SpecialCharTok{\textless{}} \DecValTok{57}\NormalTok{))}
+\NormalTok{    \{}
+\NormalTok{        trainingData[}\FunctionTok{nrow}\NormalTok{(trainingData) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{, ] }\OtherTok{\textless{}{-}}\NormalTok{ testingData[i, ]}
+\NormalTok{        testingData }\OtherTok{\textless{}{-}}\NormalTok{ testingData[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(i), ]}
+\NormalTok{    \}}
+\NormalTok{\}}
+
+\FunctionTok{rm}\NormalTok{(i) }\CommentTok{\# Clears the counter variable from the environment}
+
+\CommentTok{\# Reorder datasets}
+\NormalTok{trainingData }\OtherTok{\textless{}{-}}\NormalTok{ trainingData[}\FunctionTok{order}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{id), ]}
+\NormalTok{testingData }\OtherTok{\textless{}{-}}\NormalTok{ testingData[}\FunctionTok{order}\NormalTok{(testingData}\SpecialCharTok{$}\NormalTok{id), ]}
+\end{Highlighting}
+\end{Shaded}
+
+With our training and testing datasets in place, we can proceed with
+building a model.
+
+\hypertarget{feature-selection}{%
+\subsubsection{Feature Selection}\label{feature-selection}}
+
+We will construct our models using the Forward Selection, Backward
+Elimination, Sequential Selection (Bidirectional Elimination), Least
+Absolute Shrinkage and Selection Operator (LASSO) and Ridge Regression
+algorithms.
+
+\hypertarget{forward-selection-algorithm}{%
+\paragraph{Forward Selection
+Algorithm}\label{forward-selection-algorithm}}
+
+To run the Forward Selection algorithm, we will construct a Null
+(intercept-only) model and a Full (all regressors) model. The algorithm
+will iteratively add regressors to the Null Model until it is no longer
+optimal to do so.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Generate the Null Model}
+\NormalTok{nullModel }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(X.class. }\SpecialCharTok{\textasciitilde{}} \DecValTok{1}\NormalTok{, }\AttributeTok{data =}\NormalTok{ trainingData, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+
+\CommentTok{\# Generate the Full Model}
+\NormalTok{fullModel }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(X.class. }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X.age. }\SpecialCharTok{+}\NormalTok{ X.bp. }\SpecialCharTok{+}\NormalTok{ X.bgr. }\SpecialCharTok{+}\NormalTok{ X.bu. }\SpecialCharTok{+}\NormalTok{ X.sod. }\SpecialCharTok{+}\NormalTok{ X.pot. }\SpecialCharTok{+} 
+\NormalTok{    X.hemo. }\SpecialCharTok{+}\NormalTok{ X.pcv. }\SpecialCharTok{+}\NormalTok{ X.wbcc. }\SpecialCharTok{+}\NormalTok{ X.rbcc., }\AttributeTok{data =}\NormalTok{ trainingData, }
+        \AttributeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+
+\CommentTok{\# Run Forward Selection algorithm}
+\NormalTok{forwardModel }\OtherTok{\textless{}{-}} \FunctionTok{step}\NormalTok{(nullModel, }\AttributeTok{direction =} \StringTok{"forward"}\NormalTok{, }
+    \AttributeTok{scope =} \FunctionTok{list}\NormalTok{(}\AttributeTok{upper =}\NormalTok{ fullModel, }\AttributeTok{lower =} \SpecialCharTok{\textasciitilde{}}\DecValTok{1}\NormalTok{), }\AttributeTok{trace =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{summary}\NormalTok{(forwardModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = X.class. ~ X.hemo. + X.bgr., family = "binomial", 
+##     data = trainingData)
+## 
+## Deviance Residuals: 
+##        Min          1Q      Median          3Q         Max  
+## -1.027e-04  -2.100e-08   2.100e-08   2.100e-08   1.587e-04  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(>|z|)
+## (Intercept)   -589.583 131340.614  -0.004    0.996
+## X.hemo.         82.107  18155.300   0.005    0.996
+## X.bgr.          -3.579    797.403  -0.004    0.996
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 9.3459e+01  on 78  degrees of freedom
+## Residual deviance: 4.4040e-08  on 76  degrees of freedom
+## AIC: 6
+## 
+## Number of Fisher Scoring iterations: 25
+\end{verbatim}
+
+\hypertarget{backward-elimination-algorithm}{%
+\paragraph{Backward Elimination
+Algorithm}\label{backward-elimination-algorithm}}
+
+The Backward Elimination algorithm will iteratively remove the least
+statistically significant regressor from the Full Model until it is no
+longer optimal to do so.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Run the Backward Elimination algorithm}
+\NormalTok{backwardModel }\OtherTok{\textless{}{-}} \FunctionTok{step}\NormalTok{(fullModel, }\AttributeTok{direction =} \StringTok{"backward"}\NormalTok{, }\AttributeTok{trace =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{summary}\NormalTok{(backwardModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = X.class. ~ X.bgr. + X.bu. + X.wbcc., family = "binomial", 
+##     data = trainingData)
+## 
+## Deviance Residuals: 
+##        Min          1Q      Median          3Q         Max  
+## -4.379e-05  -2.100e-08   2.100e-08   2.100e-08   5.280e-05  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(>|z|)
+## (Intercept)  2.721e+02  1.714e+05   0.002    0.999
+## X.bgr.      -6.095e-01  6.607e+02  -0.001    0.999
+## X.bu.       -1.083e+00  9.808e+02  -0.001    0.999
+## X.wbcc.     -1.295e-02  9.460e+00  -0.001    0.999
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 9.3459e+01  on 78  degrees of freedom
+## Residual deviance: 5.0222e-09  on 75  degrees of freedom
+## AIC: 8
+## 
+## Number of Fisher Scoring iterations: 25
+\end{verbatim}
+
+\hypertarget{sequential-selection-algorithm}{%
+\paragraph{Sequential Selection
+Algorithm}\label{sequential-selection-algorithm}}
+
+The Sequential Selection algorithm will iteratively either add or remove
+a regressor at each iteration until it is no longer optimal to do so.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Run Sequential Selection algorithm}
+\NormalTok{sequentialModel }\OtherTok{\textless{}{-}} \FunctionTok{step}\NormalTok{(nullModel, }\AttributeTok{direction =} \StringTok{"both"}\NormalTok{, }
+    \AttributeTok{scope =} \FunctionTok{formula}\NormalTok{(fullModel), }\AttributeTok{trace =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{summary}\NormalTok{(sequentialModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = X.class. ~ X.hemo. + X.bgr., family = "binomial", 
+##     data = trainingData)
+## 
+## Deviance Residuals: 
+##        Min          1Q      Median          3Q         Max  
+## -1.027e-04  -2.100e-08   2.100e-08   2.100e-08   1.587e-04  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(>|z|)
+## (Intercept)   -589.583 131340.614  -0.004    0.996
+## X.hemo.         82.107  18155.300   0.005    0.996
+## X.bgr.          -3.579    797.403  -0.004    0.996
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 9.3459e+01  on 78  degrees of freedom
+## Residual deviance: 4.4040e-08  on 76  degrees of freedom
+## AIC: 6
+## 
+## Number of Fisher Scoring iterations: 25
+\end{verbatim}
+
+The Sequential Selection algorithm yields the same linear model as the
+Forward Model, thus we can ignore this algorithm's output.
+
+\hypertarget{lasso-regression-algorithm}{%
+\paragraph{LASSO Regression
+Algorithm}\label{lasso-regression-algorithm}}
+
+To run the LASSO Regression algorithm, we will utilize the
+\textcolor{blue}{\texttt{glmnet}} package \autocite{Friedman2010}. We
+will perform a k-fold cross-validation to find a value of \(\lambda\)
+that minimizes the Mean Squared Error (MSE). The algorithm will optimize
+a loss function that takes into account the sum of the absolute value of
+the regressors' coefficients. By doing so, it imposes a penalty on the
+optimization, causing the regressor coefficients to ``shrink'' towards
+zero, thereby minimizing the number of regressors required in the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load the glmnet package}
+\FunctionTok{library}\NormalTok{(glmnet)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: Matrix
+\end{verbatim}
+
+\begin{verbatim}
+## Loaded glmnet 4.1-4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# k{-}fold cross{-}validation}
+\NormalTok{lassoY }\OtherTok{\textless{}{-}}\NormalTok{ trainingData}\SpecialCharTok{$}\NormalTok{X.class.}
+\NormalTok{lassoX }\OtherTok{\textless{}{-}} \FunctionTok{data.matrix}\NormalTok{(trainingData[, }\FunctionTok{colnames}\NormalTok{(trainingData)[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{25}\NormalTok{]])}
+\NormalTok{lassoCVModel }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(lassoX, lassoY, }\AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+\NormalTok{lassoBestLambda }\OtherTok{\textless{}{-}}\NormalTok{ lassoCVModel}\SpecialCharTok{$}\NormalTok{lambda.min}
+\NormalTok{lassoBestLambda}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.001499344
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Run LASSO Regression algorithm}
+\NormalTok{lassoModel }\OtherTok{\textless{}{-}} \FunctionTok{glmnet}\NormalTok{(lassoX, lassoY, }\AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{lambda =}\NormalTok{ lassoBestLambda, }
+    \AttributeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+\FunctionTok{coef}\NormalTok{(lassoModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 25 x 1 sparse Matrix of class "dgCMatrix"
+##                        s0
+## (Intercept) -1.2003909140
+## X.age.       .           
+## X.bp.        .           
+## X.sg.        0.6097143183
+## X.al.       -2.3346253391
+## X.su.        .           
+## X.rbc.       0.6037182638
+## X.pc.        0.4913849358
+## X.pcc.       .           
+## X.ba.        .           
+## X.bgr.      -0.0022338519
+## X.bu.        .           
+## X.sc.        .           
+## X.sod.       0.0181487875
+## X.pot.       .           
+## X.hemo.      0.3466943614
+## X.pcv.       0.0612109681
+## X.wbcc.     -0.0002524382
+## X.rbcc.      .           
+## X.htn.      -0.2641867169
+## X.dm.       -2.9176751064
+## X.cad.       .           
+## X.appet.     .           
+## X.pe.        .           
+## X.ane.       .
+\end{verbatim}
+
+\hypertarget{ridge-regression-algorithm}{%
+\paragraph{Ridge Regression
+Algorithm}\label{ridge-regression-algorithm}}
+
+We will perform a k-fold cross-validation to find a value of \(\lambda\)
+that minimizes the MSE. Similar to the LASSO Regression algorithm, the
+Ridge Regression algorithm will minimize a loss function that accounts
+for the coefficients of the regressors. However, the loss function for
+the Ridge Regression algorithm involves the sum of the squares of the
+coefficients regressors as opposed to the sum of the absolute values.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# k{-}fold cross{-}validation}
+\NormalTok{ridgeY }\OtherTok{\textless{}{-}}\NormalTok{ trainingData}\SpecialCharTok{$}\NormalTok{X.class.}
+\NormalTok{ridgeX }\OtherTok{\textless{}{-}} \FunctionTok{data.matrix}\NormalTok{(trainingData[, }\FunctionTok{colnames}\NormalTok{(trainingData)[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{25}\NormalTok{]])}
+\NormalTok{ridgeCVModel }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(ridgeX, ridgeY, }\AttributeTok{alpha =} \DecValTok{0}\NormalTok{, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+\NormalTok{ridgeBestLambda }\OtherTok{\textless{}{-}}\NormalTok{ ridgeCVModel}\SpecialCharTok{$}\NormalTok{lambda.min}
+\NormalTok{ridgeBestLambda}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.03982389
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Run Ridge Regression algorithm}
+\NormalTok{ridgeModel }\OtherTok{\textless{}{-}} \FunctionTok{glmnet}\NormalTok{(ridgeX, ridgeY, }\AttributeTok{alpha =} \DecValTok{0}\NormalTok{, }\AttributeTok{lambda =}\NormalTok{ ridgeBestLambda, }
+    \AttributeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+\FunctionTok{coef}\NormalTok{(ridgeModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 25 x 1 sparse Matrix of class "dgCMatrix"
+##                       s0
+## (Intercept) -3.228125454
+## X.age.      -0.014244369
+## X.bp.       -0.008794322
+## X.sg.        0.366075803
+## X.al.       -0.518088940
+## X.su.       -0.392029998
+## X.rbc.       0.982154317
+## X.pc.        0.604612792
+## X.pcc.      -0.826046303
+## X.ba.       -0.135234334
+## X.bgr.      -0.004193946
+## X.bu.       -0.005220384
+## X.sc.       -0.069136878
+## X.sod.       0.041029502
+## X.pot.       0.028868176
+## X.hemo.      0.118697286
+## X.pcv.       0.033245605
+## X.wbcc.     -0.000128641
+## X.rbcc.      0.124670032
+## X.htn.      -0.888780335
+## X.dm.       -0.663355748
+## X.cad.      -0.248975776
+## X.appet.    -0.337182104
+## X.pe.       -0.280448159
+## X.ane.      -0.221139458
+\end{verbatim}
+
+\hypertarget{model-checking}{%
+\subsubsection{Model Checking}\label{model-checking}}
+
+Before validating our models, we must check our assumptions.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Binary Response}. Our dependent variable must be a categorical
+  nominal variable with two levels.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{table}\NormalTok{(formattedData}\SpecialCharTok{$}\NormalTok{X.class.)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##    ckd notckd 
+##     43    114
+\end{verbatim}
+
+Our assumption is met.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \textbf{Independence of Observations}. Our observations need to be
+  independent from one another. Intuitively, one patient being diagnosed
+  with CKD does not conceivably influence whether or not another patient
+  is diagnosed with CKD. The inverse of this statement also is
+  reasonably (i.e., a patient being diagnosed as healthy (without CKD)
+  does not influence another patient being diagnosed as healthy). Our
+  assumption is met.
+\item
+  \textbf{Multicollinearity}. The regressors of our models should not
+  exhibit high amounts of multicollinearity between each other. Because
+  the Forward and Backwards Models were generated from non-penalizing
+  regression methods, we will explicitly check for multicollinearity
+  using Variance Inflation Factors (VIF) which can be computed from the
+  \texttt{vif()} function in the \textcolor{blue}{\texttt{car}} package
+  \autocite{Fox2019}.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load car package}
+\FunctionTok{library}\NormalTok{(car)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: carData
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Multicollinearity Detection}
+\FunctionTok{vif}\NormalTok{(forwardModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  X.hemo.   X.bgr. 
+## 78.68015 78.68015
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{vif}\NormalTok{(backwardModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   X.bgr.    X.bu.  X.wbcc. 
+## 2.134539 1.192654 2.089410
+\end{verbatim}
+
+The Forward Model exhibits VIF scores over 10 for both regressors,
+indicating a serious multicollinearity issue with the model. The
+Backward Model exhibits VIF scores under 5 for each regressor,
+indicating a acceptable amount of correlation between the regressors. We
+will abandon the Forward Model and retain the other models.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  \textbf{Outliers}. Our model should not contain any extreme outliers
+  or high influence points (HIP). We will check for outliers and HIPs
+  using Cook's Distance and discard those observations from both models
+  if they are found.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Cook\textquotesingle{}s Distance Plot Backward Model}
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{cooks.distance}\NormalTok{(backwardModel), }\AttributeTok{main =} \StringTok{"Cook\textquotesingle{}s Distance Values in the }
+\StringTok{     Backward Model (Cutoff = 1"}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"Observation \#"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Di Value"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in title(...): font width unknown for character 0x9
+\end{verbatim}
+
+\includegraphics{CKD_Classification_Paper_files/figure-latex/Assumptions Outliers-1.pdf}
+
+There are no observations with a \(D_{i}\) value greater than 1.
+Therefore, there are no HIPs in this model. Our assumption is met.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  \textbf{Linearity Between Logit of Response and Regressor}. For each
+  regressor in our model, there needs to be a linear relationship
+  between the logit of the response and the explanatory variable. We
+  will check for linearity by examining a scatterplot of the log-odds
+  versus the regressor.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Linearity Check for the Backward Model}
+\NormalTok{backwardModelLogOdds }\OtherTok{\textless{}{-}}\NormalTok{ backwardModel}\SpecialCharTok{$}\NormalTok{linear.predictors}
+\FunctionTok{cor}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{X.bgr., backwardModelLogOdds)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.6116955
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{X.bu., backwardModelLogOdds)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.7385213
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{X.wbcc., backwardModelLogOdds)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.6763626
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{X.bgr., backwardModelLogOdds, }
+     \AttributeTok{main =} \StringTok{"Backward Model Log Odds vs. Blood Glucose (X.bgr.) Scatterplot"}\NormalTok{, }
+        \AttributeTok{xlab =} \StringTok{"Blood Glucose (mg/dL)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Log Odds"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{CKD_Classification_Paper_files/figure-latex/Assumptions Linearity-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{X.bu., backwardModelLogOdds,  }
+     \AttributeTok{main =} \StringTok{"Backward Model Log Odds vs. Blood Urea (X.bu.) Scatterplot"}\NormalTok{, }
+        \AttributeTok{xlab =} \StringTok{"Blood Urea (mg/dL)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Log Odds"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{CKD_Classification_Paper_files/figure-latex/Assumptions Linearity-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{X.wbcc., backwardModelLogOdds,}
+     \AttributeTok{main =} \StringTok{"Backward Model Log Odds vs. White Blood Cell Count (X.wbcc.) }
+\StringTok{        Scatterplot"}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"White Blood Cell Count (cells/mm\^{}3)"}\NormalTok{, }
+            \AttributeTok{ylab =} \StringTok{"Log Odds"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{CKD_Classification_Paper_files/figure-latex/Assumptions Linearity-3.pdf}
+
+The Backward model's log odds have a strong negative linear relationship
+with the blood glucose and blood urea regressors. The model's log odds
+have a moderate negative linear relationship with the white blood cell
+count regressor. Our assumption is met for this model.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  \textbf{Sample Size}. We require \(\frac{(10 \times k)}{P(x)}\) number
+  of observations where \(k\) is the number of regressors and \(P(x)\)
+  is the expected probability of the least frequent outcome in the
+  dataset.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Sample Size Check}
+
+\FunctionTok{table}\NormalTok{(trainingData}\SpecialCharTok{$}\NormalTok{X.class.)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##    ckd notckd 
+##     22     57
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(}\DecValTok{10} \SpecialCharTok{*} \DecValTok{4}\NormalTok{) }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{22} \SpecialCharTok{/} \DecValTok{79}\NormalTok{) }\CommentTok{\# 4 regressors, 22 / 79 CKD{-}classified observations}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 143.6364
+\end{verbatim}
+
+Our training dataset contains only 79 observations. Thus our assumption
+will not be met. We will proceed anyways as our models have passed all
+other critera for logistic regression.
+
+\hypertarget{validation}{%
+\subsection{Validation}\label{validation}}
+
+Using our testing dataset, we will collect statistics such as
+sensitivity, specificity, positive predictive value and negative
+predictive value on the classification models.
+
+\hypertarget{backward-model}{%
+\subsubsection{Backward Model}\label{backward-model}}
+
+We will utilize the \textbackslash texttt\{\%\textgreater\%\} (pipe)
+operator from the \textcolor{blue}{\texttt{dplyr}} package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load the dplyr package}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:car':
+## 
+##     recode
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Run the Backward Model on the test dataset}
+\NormalTok{backwardModelProbabilities }\OtherTok{\textless{}{-}}\NormalTok{ backwardModel }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{predict}\NormalTok{(testingData, }
+    \AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{backwardModelPredictedClasses }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(backwardModelProbabilities }\SpecialCharTok{\textless{}} \FloatTok{0.5}\NormalTok{, }
+    \StringTok{"ckd"}\NormalTok{, }\StringTok{"notckd"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{lasso-model}{%
+\subsubsection{LASSO Model}\label{lasso-model}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Testing data matrix}
+\NormalTok{testDataMatrix }\OtherTok{\textless{}{-}} \FunctionTok{data.matrix}\NormalTok{(testingData[, }\DecValTok{2}\SpecialCharTok{:}\DecValTok{25}\NormalTok{])}
+
+\CommentTok{\# Run the LASSO Model on the test dataset}
+\NormalTok{lassoModelPredictedProbabilities }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lassoModel, }\AttributeTok{s =}\NormalTok{ lassoBestLambda, }
+    \AttributeTok{newx =}\NormalTok{ testDataMatrix, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{lassoModelPredictedClasses }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(lassoModelPredictedProbabilities }\SpecialCharTok{\textless{}} \FloatTok{0.5}\NormalTok{, }
+    \StringTok{"ckd"}\NormalTok{, }\StringTok{"notckd"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ridge-regression-model}{%
+\subsubsection{Ridge Regression Model}\label{ridge-regression-model}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ridgeModelPredictedProbabilities }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(ridgeModel, }\AttributeTok{s =}\NormalTok{ ridgeBestLambda, }
+    \AttributeTok{newx =}\NormalTok{ testDataMatrix, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{ridgeModelPredictedClasses }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(ridgeModelPredictedProbabilities }\SpecialCharTok{\textless{}} \FloatTok{0.5}\NormalTok{, }
+    \StringTok{"ckd"}\NormalTok{, }\StringTok{"notckd"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+We will use the \textcolor{blue}{\texttt{caret}} package to generate a
+confusion matrix for each of the models to collect sensitivity,
+specificity, positive predictive value (PPV) and negative predictive
+value (NPV) \autocite{Kuhn2008}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load the caret package}
+\FunctionTok{library}\NormalTok{(caret)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: ggplot2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: lattice
+\end{verbatim}
+
+\hypertarget{backward-model-1}{%
+\subsection{Backward Model}\label{backward-model-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confusionMatrix}\NormalTok{(}\FunctionTok{table}\NormalTok{(backwardModelPredictedClasses, testingData}\SpecialCharTok{$}\NormalTok{X.class.))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##                              
+## backwardModelPredictedClasses ckd notckd
+##                        ckd     16      0
+##                        notckd   5     57
+##                                           
+##                Accuracy : 0.9359          
+##                  95% CI : (0.8567, 0.9789)
+##     No Information Rate : 0.7308          
+##     P-Value [Acc > NIR] : 4.121e-06       
+##                                           
+##                   Kappa : 0.8238          
+##                                           
+##  Mcnemar's Test P-Value : 0.07364         
+##                                           
+##             Sensitivity : 0.7619          
+##             Specificity : 1.0000          
+##          Pos Pred Value : 1.0000          
+##          Neg Pred Value : 0.9194          
+##              Prevalence : 0.2692          
+##          Detection Rate : 0.2051          
+##    Detection Prevalence : 0.2051          
+##       Balanced Accuracy : 0.8810          
+##                                           
+##        'Positive' Class : ckd             
+## 
+\end{verbatim}
+
+The Backward Model has an accuracy of 93.59\%. It is able to correctly
+return a ``ckd'' classification, given that a patient does actually have
+CKD, 76.19\% of the time and correctly return a ``notckd''
+classification, given that a patient does not actually have CKD, 100\%
+of the time. A patient has a 100\% chance of having CKD given that the
+model returns a ``ckd'' classification for their biometrics and a
+91.94\% chance of not having CKD given that the model returns a
+``notckd'' classification for their biometrics.
+
+\hypertarget{lasso-model-1}{%
+\subsection{LASSO Model}\label{lasso-model-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confusionMatrix}\NormalTok{(}\FunctionTok{table}\NormalTok{(lassoModelPredictedClasses, testingData}\SpecialCharTok{$}\NormalTok{X.class.))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##                           
+## lassoModelPredictedClasses ckd notckd
+##                     ckd     21      0
+##                     notckd   0     57
+##                                      
+##                Accuracy : 1          
+##                  95% CI : (0.9538, 1)
+##     No Information Rate : 0.7308     
+##     P-Value [Acc > NIR] : 2.371e-11  
+##                                      
+##                   Kappa : 1          
+##                                      
+##  Mcnemar's Test P-Value : NA         
+##                                      
+##             Sensitivity : 1.0000     
+##             Specificity : 1.0000     
+##          Pos Pred Value : 1.0000     
+##          Neg Pred Value : 1.0000     
+##              Prevalence : 0.2692     
+##          Detection Rate : 0.2692     
+##    Detection Prevalence : 0.2692     
+##       Balanced Accuracy : 1.0000     
+##                                      
+##        'Positive' Class : ckd        
+## 
+\end{verbatim}
+
+The LASSO Model has an accuracy of 100\%. It is able to correctly return
+a ``ckd'' classification, given that a patient does actually have CKD,
+100\% of the time and correctly return a ``notckd'' classification,
+given that a patient does not actually have CKD, 100\% of the time. A
+patient has a 100\% chance of having CKD given that the model returns a
+``ckd'' classification for their biometrics and a 100\% chance of not
+having CKD given that the model returns a ``notckd'' classification for
+their biometrics.
+
+\hypertarget{ridge-regression-model-1}{%
+\subsection{Ridge Regression Model}\label{ridge-regression-model-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confusionMatrix}\NormalTok{(}\FunctionTok{table}\NormalTok{(ridgeModelPredictedClasses, testingData}\SpecialCharTok{$}\NormalTok{X.class.))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##                           
+## ridgeModelPredictedClasses ckd notckd
+##                     ckd     21      0
+##                     notckd   0     57
+##                                      
+##                Accuracy : 1          
+##                  95% CI : (0.9538, 1)
+##     No Information Rate : 0.7308     
+##     P-Value [Acc > NIR] : 2.371e-11  
+##                                      
+##                   Kappa : 1          
+##                                      
+##  Mcnemar's Test P-Value : NA         
+##                                      
+##             Sensitivity : 1.0000     
+##             Specificity : 1.0000     
+##          Pos Pred Value : 1.0000     
+##          Neg Pred Value : 1.0000     
+##              Prevalence : 0.2692     
+##          Detection Rate : 0.2692     
+##    Detection Prevalence : 0.2692     
+##       Balanced Accuracy : 1.0000     
+##                                      
+##        'Positive' Class : ckd        
+## 
+\end{verbatim}
+
+The Ridge Regresion Model has an accuracy of 100\%. It is able to
+correctly return a ``ckd'' classification, given that a patient does
+actually have CKD, 100\% of the time and correctly return a ``notckd''
+classification, given that a patient does not actually have CKD, 100\%
+of the time. A patient has a 100\% chance of having CKD given that the
+model returns a ``ckd'' classification for their biometrics and a 100\%
+chance of not having CKD given that the model returns a ``notckd''
+classification for their biometrics.
+
+\hypertarget{discussion-conclusion}{%
+\section{Discussion \& Conclusion}\label{discussion-conclusion}}
+
+The most optimal model is the model that maximizes its accuracy,
+sensitivity, specificity, PPV and NPV. Based on this criteria, the LASSO
+and Ridge Regresion Models are the best models for classifying whether
+or not a patient has CKD. Additionally, the Backward Model is a strong
+model, demonstrating high accuracy, specificity, PPV and NPV. In the
+future, this analysis should be repeated using larger sample sizes. One
+potential re-approach to this study could involve the use of Generative
+Adversarial Neural Networks (GAN). GANs allow for the creation of new,
+but similar and useful data from random noise which can be used to
+handle issues involving low sample sizes \autocite{Saxena2021}.
+
+\newpage
+
+\printbibliography
+
+\end{document}

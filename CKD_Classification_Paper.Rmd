@@ -1,0 +1,580 @@
+---
+title: "**Classifying Chronic Kidney Disease Using a Multivariate Binary Logistic Regression Model**"
+author: "Aanish Pradhan"
+date: \today
+output: 
+  pdf_document: 
+    keep_tex: yes
+    citation_package: biblatex
+biblatexoptions: [backend=biber, citestyle=numeric, bibstyle=numeric, autocite=superscript]
+bibliography: references.bib
+---
+
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+# Abstract
+
+Chronic Kidney Disease (CKD) is one of the leading causes of death in the 
+United States. In 2020, renal diseases accounted for approximately 53,000 
+deaths. It is estimated that approximately 15% of adults in the U.S. have CKD.
+Furthermore, of the 15% of adults that have CKD, 90% of them are not aware that 
+they have the condition [@CDC2021]. CKD is a challenging condition for 
+physicians to diagnose and often requires a combination of laboratory testing 
+and physical examinations to be able to diagnose a patient. We attempted to 
+construct a statistical classification model that could determine whether or 
+not a patient has CKD from a set of various predictors that could be obtained 
+from laboratory blood test results or a physical examination. Our approach 
+consisted of constructing and training several multivariate binary logistic 
+regression models using various feature selection algorithms. The resulting 
+models were benchmarked on a batch of testing data set aside earlier. The 
+optimal model was chosen based on which model demonstrated the most favorable 
+results in a confusion matrix. All models were able to obtain an accuracy of 
+over 93%.
+
+# Introduction
+
+Chronic Kidney Disease is an umbrella phrase, used to refer to a multitude of 
+chronic, degenerative (i.e. loss of kidney function over time) renal disorders 
+[@Versino2019]. Diagnosing CKD is problematic because its symptoms do not 
+present until later in life when the condition has seriously progressed. For 
+this reason, CKD is often called a "silent killer" [@Kopyt2006]. Furthermore, 
+CKD presents with similar symptoms as acute kidney injury as well as 
+completely unrelated conditions. For example, microscopic hematuria (presence 
+of red blood cells in the urine) and proteinuria (presence of protein in the 
+urine) are characteristic symptoms of kidney disease. However, they are also 
+observed in individuals after strenuous exercise such as long-distance running 
+and weightlifting. Physicians have to use a combination of metrics collected 
+over time from full-body physical examinations and laboratory blood test 
+results as well as their intuition to diagnose CKD in patients.
+
+# Methods
+
+Our approach consists of three phases: an initial setup, modeling and, lastly, 
+testing.
+
+## Setup
+
+In our setup phase, we will acquire, clean, format and conduct some initial 
+exploratory data analysis (EDA).
+
+### Data Collection
+
+Our data will come from a dataset housed in the University of 
+California-Irvine's Machine Learning Repository available [\underline{here}](https://archive.ics.uci.edu/ml/machine-learning-databases/00336/Chronic_Kidney_Disease.rar) [@Dua2019]. The data itself was collected in a study conducted over the 
+span of two months at the Alagappa University Health Care Centre in Tamilnadu, 
+India. No other details were given regarding collection methods.
+
+```{r Data Collection}
+# Read original dataset
+originalData <- read.csv("Data/chronic_kidney_disease_full.csv", header = TRUE)
+colnames(originalData)
+```
+
+The dataset contains a multitude of features such as age, blood pressure, serum 
+creatinine and other biometrics that are obtained from full-body physical exams 
+and laboratory blood tests.
+
+### Data Wrangling
+
+```{r Data Wrangling Extraneous Characters}
+head(originalData, n = 5)
+```
+
+We observe some extraneous characters contaminating the dataset. We will 
+replace extraneous characters, whitespace and blankspace with "NA" values.
+
+```{r Data Wrangling Replacement}
+# Replace extraneous characters, whitespace and blankspace with NA values
+replacedData <- read.csv("Data/chronic_kidney_disease_full.csv", 
+	header = TRUE, na.strings = c("", " ", "?"))
+head(replacedData, n = 1)
+```
+
+### Data Cleaning
+
+```{r Data Cleaning Missing}
+any(is.na(replacedData))
+```
+
+Our dataset contains observations with missing values. We will discard these 
+observations.
+
+```{r}
+# Omit observations with NA entries
+cleanedData <- na.omit(replacedData)
+any(is.na(cleanedData))
+```
+
+### Data Formatting
+
+```{r Data Formatting Type Check}
+str(cleanedData)
+```
+
+Some of our features were read in with the wrong type. We will correct the type 
+of the features.
+
+```{r Data Formatting Type Correction}
+# Correct the variable types
+formattedData <- cleanedData
+formattedData$id <- as.integer(formattedData$id)
+formattedData$X.sg. <- as.factor(formattedData$X.sg.)
+formattedData$X.al. <- as.factor(formattedData$X.al.)
+formattedData$X.su. <- as.factor(formattedData$X.su.)
+formattedData$X.rbc. <- as.factor(formattedData$X.rbc.)
+formattedData$X.pc. <- as.factor(formattedData$X.pc.)
+formattedData$X.pcc. <- as.factor(formattedData$X.pcc.)
+formattedData$X.ba. <- as.factor(formattedData$X.ba.)
+formattedData$X.htn. <- as.factor(formattedData$X.htn.)
+formattedData$X.dm. <- as.factor(formattedData$X.dm.)
+formattedData$X.cad. <- as.factor(formattedData$X.cad.)
+formattedData$X.appet. <- as.factor(formattedData$X.appet.)
+formattedData$X.pe. <- as.factor(formattedData$X.pe.)
+formattedData$X.ane. <- as.factor(formattedData$X.ane.)
+formattedData$X.class. <- as.factor(formattedData$X.class.)
+str(formattedData)
+```
+
+With our dataset cleaned, we can proceed with exploratory data analysis.
+
+### Exploratory Data Analysis
+
+We can begin EDA with a 5-number summary of the features in our prepared data.
+
+```{r EDA Dataframe Summary}
+summary(formattedData)
+```
+
+We have several continuous numerical variables. We will examine correlation 
+between the features.
+
+```{r EDA Correlation Matrix Scatterplot}
+# Extract continuous numerical variables
+correlationMatrix <- data.frame(formattedData$X.age., formattedData$X.bp., 
+	formattedData$X.bgr., formattedData$X.bu., formattedData$X.sc., 
+		formattedData$X.sod., formattedData$X.pot., formattedData$X.hemo., 
+			formattedData$X.pcv., formattedData$X.wbcc., formattedData$X.rbcc.)
+
+# Abbreviate names
+colnames(correlationMatrix) <- c("X.age.", "X.bp.", "X.bgr.", "X.bu.", "X.sc.", 
+	"X.sod.", "X.pot.", "X.hemo.", "X.pcv.", "X.wbcc.", "X.rbcc")
+
+# Correlation plot
+plot(correlationMatrix, main = "Scatterplot of Correlation Matrix")
+```
+
+The correlation matrix scatterplot shows some features are correlated with 
+each other. We can quantify the correlation by examining the Pearson 
+correlation coefficients computed from the correlation matrix.
+
+```{r EDA Correlation Matrix}
+# Compute Pearson correlation coefficients and round r-values
+round(cor(correlationMatrix, method = "pearson"), digits = 2)
+```
+
+Some variables appear to have strong, linear relationships with other 
+variables. This indicates that we could observe issues with multicollinearity 
+in our models. Using a cutoff of $r = \pm 0.7$, we can identify which variables 
+are highly correlated with others.
+
+```{r EDA Correlation Matrix Collinear Variables}
+abs(cor(correlationMatrix, method = "pearson")) > 0.7
+```
+
+We observe that \textcolor{red}{\texttt{X.bu}}, 
+\textcolor{red}{\texttt{X.hemo.}}, and \textcolor{red}{\texttt{X.rbcc.}} 
+exhibit multicollinearity with several other variables.
+
+## Modeling
+
+In our modeling phase, we will perform a training and test dataset split, 
+construct our models using various feature selection algorithms and perform 
+various model diagnostics.
+
+### Train-Test Data Split
+
+Our variable of interest is \textcolor{red}{\texttt{X.class.}}.
+
+```{r Modeling Response Variable}
+table(formattedData$X.class.)
+```
+
+We will randomize the rows of our dataset and perform a 50-50 train-test data 
+split. The training data will contain 22 "ckd"-classified observations 57 
+"notckd"-classified observations. The testing data will contain 21 
+"ckd"-classified observations and 57 "notckd"-classified observations. In order 
+to maintain reproducibility, we will use a sample seed of "42".
+
+```{r Modeling Row Randomization}
+# Generate a row-randomized dataset
+set.seed(42)
+randomizedData <- formattedData[sample(nrow(formattedData)), ]
+```
+
+From our randomized dataset, we can copy the first 22 "ckd"-classified 
+observations into the training dataset and the subsequent 21 
+"notckd"-classified observations into the testing dataset.
+
+```{r Modeling Data Split}
+# Construct testing dataset
+testingData <- randomizedData # Dataset is constructed by Complement Rule
+
+# Construct training dataset
+trainingData <- testingData[-c(1:157), ] # Copy column names & preserve type
+
+for (i in 1:length(testingData$id)) # Extract first 22 CKD observations
+{
+	if ((testingData[i, ]$X.class. == "ckd") & 
+		(sum(trainingData$X.class. == "ckd") < 22))
+	{
+		trainingData[nrow(trainingData) + 1, ] <- testingData[i, ]
+		testingData <- testingData[-c(i), ]
+	}
+}
+
+for (i in 1:length(testingData$id)) # Extract first 57 non-CKD observations 
+{
+	if ((testingData[i, ]$X.class. == "notckd") & 
+		(sum(trainingData$X.class. == "notckd") < 57))
+	{
+		trainingData[nrow(trainingData) + 1, ] <- testingData[i, ]
+		testingData <- testingData[-c(i), ]
+	}
+}
+
+rm(i) # Clears the counter variable from the environment
+
+# Reorder datasets
+trainingData <- trainingData[order(trainingData$id), ]
+testingData <- testingData[order(testingData$id), ]
+```
+
+With our training and testing datasets in place, we can proceed with building a 
+model.
+
+### Feature Selection
+
+We will construct our models using the Forward Selection, Backward Elimination, 
+Sequential Selection (Bidirectional Elimination), Least Absolute Shrinkage and 
+Selection Operator (LASSO) and Ridge Regression algorithms.
+
+#### Forward Selection Algorithm
+
+To run the Forward Selection algorithm, we will construct a Null 
+(intercept-only) model and a Full (all regressors) model. The algorithm will 
+iteratively add regressors to the Null Model until it is no longer optimal to 
+do so.
+
+```{r Modeling Forward Selection, warning = FALSE}
+# Generate the Null Model
+nullModel <- glm(X.class. ~ 1, data = trainingData, family = "binomial")
+
+# Generate the Full Model
+fullModel <- glm(X.class. ~ X.age. + X.bp. + X.bgr. + X.bu. + X.sod. + X.pot. + 
+	X.hemo. + X.pcv. + X.wbcc. + X.rbcc., data = trainingData, 
+		family = "binomial")
+
+# Run Forward Selection algorithm
+forwardModel <- step(nullModel, direction = "forward", 
+	scope = list(upper = fullModel, lower = ~1), trace = 0)
+summary(forwardModel)
+```
+
+#### Backward Elimination Algorithm
+
+The Backward Elimination algorithm will iteratively remove the least 
+statistically significant regressor from the Full Model until it is no longer
+optimal to do so.
+
+```{r Modeling Backward Elimination, warning = FALSE}
+# Run the Backward Elimination algorithm
+backwardModel <- step(fullModel, direction = "backward", trace = 0)
+summary(backwardModel)
+```
+
+#### Sequential Selection Algorithm
+
+The Sequential Selection algorithm will iteratively either add or remove a
+regressor at each iteration until it is no longer optimal to do so.
+
+```{r Modeling Sequential Selection, warning = FALSE}
+# Run Sequential Selection algorithm
+sequentialModel <- step(nullModel, direction = "both", 
+	scope = formula(fullModel), trace = 0)
+summary(sequentialModel)
+```
+
+The Sequential Selection algorithm yields the same linear model as the Forward 
+Model, thus we can ignore this algorithm's output.
+
+#### LASSO Regression Algorithm
+
+To run the LASSO Regression algorithm, we will utilize the 
+\textcolor{blue}{\texttt{glmnet}} package [@Friedman2010]. We will perform a 
+k-fold cross-validation to find a value of $\lambda$ that minimizes the Mean 
+Squared Error (MSE). The algorithm will optimize a loss function that takes 
+into account the sum of the absolute value of the regressors' coefficients. By 
+doing so, it imposes a penalty on the optimization, causing the regressor 
+coefficients to "shrink" towards zero, thereby minimizing the number of 
+regressors required in the model.
+
+```{r Modeling LASSO Cross-Validation, warning = FALSE}
+# Load the glmnet package
+library(glmnet)
+
+# k-fold cross-validation
+lassoY <- trainingData$X.class.
+lassoX <- data.matrix(trainingData[, colnames(trainingData)[2:25]])
+lassoCVModel <- cv.glmnet(lassoX, lassoY, alpha = 1, family = "binomial")
+lassoBestLambda <- lassoCVModel$lambda.min
+lassoBestLambda
+```
+
+```{r Modeling LASSO Regression}
+# Run LASSO Regression algorithm
+lassoModel <- glmnet(lassoX, lassoY, alpha = 1, lambda = lassoBestLambda, 
+	family = "binomial")
+coef(lassoModel)
+```
+
+#### Ridge Regression Algorithm
+
+We will perform a k-fold cross-validation to find a value of $\lambda$ that 
+minimizes the MSE. Similar to the LASSO Regression algorithm, the Ridge 
+Regression algorithm will minimize a loss function that accounts for the 
+coefficients of the regressors. However, the loss function for the Ridge 
+Regression algorithm involves the sum of the squares of the coefficients 
+regressors as opposed to the sum of the absolute values.
+
+```{r Modeling Ridge Cross-Validation}
+# k-fold cross-validation
+ridgeY <- trainingData$X.class.
+ridgeX <- data.matrix(trainingData[, colnames(trainingData)[2:25]])
+ridgeCVModel <- cv.glmnet(ridgeX, ridgeY, alpha = 0, family = "binomial")
+ridgeBestLambda <- ridgeCVModel$lambda.min
+ridgeBestLambda
+```
+
+```{r Modeling Ridge Regression}
+# Run Ridge Regression algorithm
+ridgeModel <- glmnet(ridgeX, ridgeY, alpha = 0, lambda = ridgeBestLambda, 
+	family = "binomial")
+coef(ridgeModel)
+```
+
+### Model Checking
+
+Before validating our models, we must check our assumptions.
+
+1. **Binary Response**. Our dependent variable must be a categorical nominal 
+variable with two levels.
+
+```{r Assumptions Response}
+table(formattedData$X.class.)
+```
+
+Our assumption is met.
+
+2. **Independence of Observations**. Our observations need to be independent 
+from one another. Intuitively, one patient being diagnosed with CKD does not 
+conceivably influence whether or not another patient is diagnosed with CKD. The 
+inverse of this statement also is reasonably (i.e., a patient being diagnosed 
+as healthy (without CKD) does not influence another patient being diagnosed 
+as healthy). Our assumption is met.
+
+3. **Multicollinearity**. The regressors of our models should not exhibit high 
+amounts of multicollinearity between each other. Because the Forward and 
+Backwards Models were generated from non-penalizing regression methods, we will 
+explicitly check for multicollinearity using Variance Inflation Factors (VIF) 
+which can be computed from the \texttt{vif()} function in the 
+\textcolor{blue}{\texttt{car}} package [@Fox2019].
+
+```{r Assumptions Multicollinearity}
+# Load car package
+library(car)
+
+# Multicollinearity Detection
+vif(forwardModel)
+vif(backwardModel)
+```
+
+The Forward Model exhibits VIF scores over 10 for both regressors, indicating a 
+serious multicollinearity issue with the model. The Backward Model exhibits VIF 
+scores under 5 for each regressor, indicating a acceptable amount of 
+correlation between the regressors. We will abandon the Forward Model and 
+retain the other models.
+
+4. **Outliers**. Our model should not contain any extreme outliers or high 
+influence points (HIP). We will check for outliers and HIPs using Cook's 
+Distance and discard those observations from both models if they are found.
+
+```{r Assumptions Outliers}
+# Cook's Distance Plot Backward Model
+plot(cooks.distance(backwardModel), main = "Cook's Distance Values in the 
+	 Backward Model (Cutoff = 1", xlab = "Observation #", ylab = "Di Value")
+```
+
+There are no observations with a $D_{i}$ value greater than 1. Therefore, there 
+are no HIPs in this model. Our assumption is met.
+
+5. **Linearity Between Logit of Response and Regressor**. For each regressor in 
+our model, there needs to be a linear relationship between the logit of the 
+response and the explanatory variable. We will check for linearity by examining 
+a scatterplot of the log-odds versus the regressor.
+
+
+```{r Assumptions Linearity, warning=FALSE}
+# Linearity Check for the Backward Model
+backwardModelLogOdds <- backwardModel$linear.predictors
+cor(trainingData$X.bgr., backwardModelLogOdds)
+cor(trainingData$X.bu., backwardModelLogOdds)
+cor(trainingData$X.wbcc., backwardModelLogOdds)
+
+
+plot(trainingData$X.bgr., backwardModelLogOdds, 
+	 main = "Backward Model Log Odds vs. Blood Glucose (X.bgr.) Scatterplot", 
+		xlab = "Blood Glucose (mg/dL)", ylab = "Log Odds")
+plot(trainingData$X.bu., backwardModelLogOdds,  
+	 main = "Backward Model Log Odds vs. Blood Urea (X.bu.) Scatterplot", 
+		xlab = "Blood Urea (mg/dL)", ylab = "Log Odds")
+plot(trainingData$X.wbcc., backwardModelLogOdds,
+	 main = "Backward Model Log Odds vs. White Blood Cell Count (X.wbcc.) 
+		Scatterplot", xlab = "White Blood Cell Count (cells/mm^3)", 
+			ylab = "Log Odds")
+```
+
+The Backward model's log odds have a strong negative linear relationship with 
+the blood glucose and blood urea regressors. The model's log odds have a 
+moderate negative linear relationship with the white blood cell count 
+regressor. Our assumption is met for this model.
+
+6. **Sample Size**. We require $\frac{(10 \times k)}{P(x)}$ number of 
+observations where $k$ is the number of regressors and $P(x)$ is the 
+expected probability of the least frequent outcome in the dataset.
+
+```{r Assumptions Sample Size}
+# Sample Size Check
+
+table(trainingData$X.class.)
+
+(10 * 4) / (22 / 79) # 4 regressors, 22 / 79 CKD-classified observations
+```
+
+Our training dataset contains only 79 observations. Thus our assumption will 
+not be met. We will proceed anyways as our models have passed all other 
+critera for logistic regression.
+
+## Validation
+
+Using our testing dataset, we will collect statistics such as sensitivity, 
+specificity, positive predictive value and negative predictive value on the 
+classification models.
+
+### Backward Model
+
+We will utilize the \texttt{%>%} (pipe) operator from the 
+\textcolor{blue}{\texttt{dplyr}} package.
+
+```{r Validation Backward Model, warning = FALSE}
+# Load the dplyr package
+library(dplyr)
+
+# Run the Backward Model on the test dataset
+backwardModelProbabilities <- backwardModel %>% predict(testingData, 
+	type = "response")
+backwardModelPredictedClasses <- ifelse(backwardModelProbabilities < 0.5, 
+	"ckd", "notckd")
+```
+
+### LASSO Model
+
+```{r Validation LASSO Model}
+# Testing data matrix
+testDataMatrix <- data.matrix(testingData[, 2:25])
+
+# Run the LASSO Model on the test dataset
+lassoModelPredictedProbabilities <- predict(lassoModel, s = lassoBestLambda, 
+	newx = testDataMatrix, type = "response")
+lassoModelPredictedClasses <- ifelse(lassoModelPredictedProbabilities < 0.5, 
+	"ckd", "notckd")
+```
+
+
+### Ridge Regression Model
+
+```{r Validation Ridge Regression Model}
+ridgeModelPredictedProbabilities <- predict(ridgeModel, s = ridgeBestLambda, 
+	newx = testDataMatrix, type = "response")
+ridgeModelPredictedClasses <- ifelse(ridgeModelPredictedProbabilities < 0.5, 
+	"ckd", "notckd")
+```
+
+
+# Results
+
+We will use the \textcolor{blue}{\texttt{caret}} package to generate a 
+confusion matrix for each of the models to collect sensitivity, specificity, 
+positive predictive value (PPV) and negative predictive value (NPV) 
+[@Kuhn2008]. 
+
+```{r Results caret Package, warning = FALSE}
+# Load the caret package
+library(caret)
+```
+
+## Backward Model
+
+```{r Backward Model Confusion Matrix}
+confusionMatrix(table(backwardModelPredictedClasses, testingData$X.class.))
+```
+
+The Backward Model has an accuracy of 93.59%. It is able to correctly return a 
+"ckd" classification, given that a patient does actually have CKD, 76.19% of the 
+time and correctly return a "notckd" classification, given that a patient 
+does not actually have CKD, 100% of the time. A patient has a 100% chance of 
+having CKD given that the model returns a "ckd" classification for their 
+biometrics and a 91.94% chance of not having CKD given that the model returns a 
+"notckd" classification for their biometrics.
+
+## LASSO Model
+
+```{r LASSO Model Confusion Matrix}
+confusionMatrix(table(lassoModelPredictedClasses, testingData$X.class.))
+```
+
+The LASSO Model has an accuracy of 100%. It is able to correctly return a 
+"ckd" classification, given that a patient does actually have CKD, 100% of the 
+time and correctly return a "notckd" classification, given that a patient 
+does not actually have CKD, 100% of the time. A patient has a 100% chance of 
+having CKD given that the model returns a "ckd" classification for their 
+biometrics and a 100% chance of not having CKD given that the model returns a 
+"notckd" classification for their biometrics.
+
+## Ridge Regression Model
+
+```{r Ridge Regression Model Confusion Matrix}
+confusionMatrix(table(ridgeModelPredictedClasses, testingData$X.class.))
+```
+
+The Ridge Regresion Model has an accuracy of 100%. It is able to correctly 
+return a "ckd" classification, given that a patient does actually have CKD, 
+100% of the time and correctly return a "notckd" classification, given that a 
+patient does not actually have CKD, 100% of the time. A patient has a 100% 
+chance of having CKD given that the model returns a "ckd" classification for 
+their biometrics and a 100% chance of not having CKD given that the model 
+returns a "notckd" classification for their biometrics.
+
+# Discussion & Conclusion
+
+The most optimal model is the model that maximizes its accuracy, sensitivity, 
+specificity, PPV and NPV. Based on this criteria, the LASSO and Ridge Regresion 
+Models are the best models for classifying whether or not a patient has CKD. 
+Additionally, the Backward Model is a strong model, demonstrating high 
+accuracy, specificity, PPV and NPV. In the future, this analysis should be 
+repeated using larger sample sizes. One potential re-approach to this study 
+could involve the use of Generative Adversarial Neural Networks (GAN). GANs 
+allow for the creation of new, but similar and useful data from random noise 
+which can be used to handle issues involving low sample sizes [@Saxena2021].
+
+\newpage
